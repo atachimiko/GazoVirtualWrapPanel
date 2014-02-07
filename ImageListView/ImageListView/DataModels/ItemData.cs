@@ -8,15 +8,16 @@ using System.Windows.Media.Imaging;
 
 namespace ImageListView.DataModels
 {
-	public class ItemData : NotificationObject
+	public class ItemData : NotificationObject, ILazyLoadingItem
 	{
 
 		public ItemData()
 		{
-			var path = @"D:\Desktop\SpringFsデータサンプル\[緊急避難] 妹との日常\00.jpg";
+			var path = @"Assets/Penguins.jpg";
 			this.Icon = BitmapFrame.Create(new Uri(path, UriKind.Relative));
 		}
 
+		#region [プロパティ]
 		#region Label変更通知プロパティ
 		private string _Label;
 
@@ -50,5 +51,42 @@ namespace ImageListView.DataModels
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// 画面に表示されたことを検知するためのプロパティ
+		/// </summary>
+		/// <remarks>
+		/// XAMLでバインディングが呼び出された場合にgetプロパティが呼び出されます。
+		/// </remarks>
+		public bool IsLoaded
+		{
+			get
+			{
+				OnLoaded();
+				return true;
+			}
+		}
+		#endregion
+
+
+		/// <summary>
+		/// IsLoadedプロパティが読み込まれたときに発生するイベント
+		/// </summary>
+		public event EventHandler Loaded;
+
+		private void OnLoaded()
+		{
+			var h = this.Loaded;
+			if (h != null)
+			{
+				h(this, EventArgs.Empty);
+			}
+		}
+	}
+
+	interface ILazyLoadingItem
+	{
+		bool IsLoaded { get; }
+		event EventHandler Loaded;
 	}
 }
