@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ImageListView.Utils;
 using ImageListView.Supports;
+using System.Timers;
+using System.Windows.Controls.Primitives;
 
 namespace ImageListView.DataModels
 {
@@ -15,14 +17,49 @@ namespace ImageListView.DataModels
 		public MyData(MainWindow mainWindow)
 		{
 			this._MainWindow = mainWindow;
+			this._Timer = new Timer();
+			this._Timer.Interval = 100;
+			this._Timer.Elapsed += OnTimer_Elapsed;
+
+			this._ScrollingTimer = new Timer();
+			this._ScrollingTimer.Interval = 1000;
+			this._ScrollingTimer.Elapsed += OnScrollingTimer_Elapsed;
+			this._ScrollingTimer.AutoReset = false;
+
+			this._ItemDataDataSource = new ItemDataDataSource();
 
 			// 初期データ
 			for (int i = 0; i < 30; i++)
 			{
-				this.ListItems.Add(new ItemData { Label = "初期値" + i });
+				this._ItemDataDataSource.AddItem(new ItemData { IdText = "Id=" + i, Label = "初期値" + i });
 			}
 
-			_MainWindow.ListViewSampleContainer.ItemsSource = ListItems;
+			_MainWindow.ListViewSampleContainer.ItemsSource = this._ItemDataDataSource.Items;
+
+			//this._Timer.Start();
+		}
+
+		async void OnScrollingTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			Console.WriteLine("OnScrollingTimer_Elapsed");
+
+			IItemContainerGenerator generator = this._MainWindow.ListViewSampleContainer.ItemContainerGenerator;
+			for (int index = 0; index < this._MainWindow.ListViewSampleContainer.Items.Count; index++)
+			{
+				GeneratorPosition position = generator.GeneratorPositionFromIndex(index);
+
+				if (position.Offset != 0)
+				{
+					dynamic d = this._MainWindow.ListViewSampleContainer.Items[index];
+					d.Unload();
+				}
+			}
+
+
+			await DispatcherHelper.UIDispatcher.InvokeAsync(() =>
+			{
+				ShowGeneratorPosition();
+			});
 		}
 
 		/// <summary>
@@ -30,13 +67,14 @@ namespace ImageListView.DataModels
 		/// </summary>
 		public void AddItem()
 		{
-			int pos = this.ListItems.Count + 1;
-			this.ListItems.Insert(this.ListItems.Count, new ItemData { Label = "追加 " + pos });
-
+			int pos = this._ItemDataDataSource.Items.Count + 1;
+			this._ItemDataDataSource.AddItem(new ItemData { Label = "追加 " + pos });
+			/*
 			if (ListViewSampleContainerVertialOffset == lastScrollVerticalOffset)
 				ListViewSampleContainerVertialOffset = lastScrollVerticalOffset + 0.1;
 			else
 				ListViewSampleContainerVertialOffset = lastScrollVerticalOffset;
+			*/
 		}
 
 		/// <summary>
@@ -57,15 +95,18 @@ namespace ImageListView.DataModels
 
 		public void Scrolling()
 		{
-			Console.WriteLine("Scrolling");
-			var @scroll = this._MainWindow.ListViewSampleContainer.GetScrollViewer();
-			Console.WriteLine("スクロール位置 " + @scroll.VerticalOffset);
+			this._ScrollingTimer.Stop();
+			this._ScrollingTimer.Start();
 
-			lastScrollVerticalOffset = @scroll.VerticalOffset;
+			//var @scroll = this._MainWindow.ListViewSampleContainer.GetScrollViewer();
+
+			//lastScrollVerticalOffset = @scroll.VerticalOffset;
+			MessageClear();
+			//ShowGeneratorPosition();
 		}
 		double lastScrollVerticalOffset = 0.0;
 
-		#region プロパティ
+		#region [プロパティ]
 		#region ListViewSampleContainerVertialOffset変更通知プロパティ
 		private double _ListViewSampleContainerVertialOffset;
 
@@ -102,7 +143,17 @@ namespace ImageListView.DataModels
 		}
 		#endregion
 		#endregion
-		ObservableSynchronizedCollection<ItemData> ListItems = new ObservableSynchronizedCollection<ItemData>();
+
+		Timer _Timer;
+		Timer _ScrollingTimer;
+		ItemDataDataSource _ItemDataDataSource;
 		MainWindow _MainWindow;
+
+
+		void OnTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			AddItem();
+		}
+
 	}
 }

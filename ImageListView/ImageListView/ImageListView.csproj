@@ -120,6 +120,9 @@
     <Folder Include="Behaviors\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Desert.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Penguins.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

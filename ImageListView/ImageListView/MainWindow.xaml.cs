@@ -26,6 +26,7 @@ namespace ImageListView
 		{
 			InitializeComponent();
 
+			DispatcherHelper.UIDispatcher = this.Dispatcher;
 		
 			this.Data = new MyData(this);
 			this.DataContext = this.Data;
