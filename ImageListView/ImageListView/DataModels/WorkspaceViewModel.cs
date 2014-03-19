@@ -12,9 +12,9 @@ using System.Windows.Controls.Primitives;
 namespace ImageListView.DataModels
 {
 
-	public class MyData : NotificationObject
+	public class WorkspaceViewModel : NotificationObject
 	{
-		public MyData(MainWindow mainWindow)
+		public WorkspaceViewModel(MainWindow mainWindow)
 		{
 			this._MainWindow = mainWindow;
 			this._Timer = new Timer();
@@ -142,6 +142,25 @@ namespace ImageListView.DataModels
 			}
 		}
 		#endregion
+
+
+		#region ItemWidth変更通知プロパティ
+		private int _ItemWidth = 150;
+
+		public int ItemWidth
+		{
+			get
+			{ return _ItemWidth; }
+			set
+			{ 
+				if (_ItemWidth == value)
+					return;
+				_ItemWidth = value;
+				RaisePropertyChanged();
+			}
+		}
+		#endregion
+
 		#endregion
 
 		Timer _Timer;

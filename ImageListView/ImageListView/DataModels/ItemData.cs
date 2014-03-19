@@ -223,7 +223,7 @@ namespace ImageListView.DataModels
 		private async Task<List<ItemData>> GetData()
 		{
 			var @rnd = new Random();
-			return await Task.Delay(@rnd.Next(1000,10000))
+			return await Task.Delay(@rnd.Next(1,5) * 1000)
 				.ContinueWith(_ =>
 				{
 					List<ItemData> l = new List<ItemData>();

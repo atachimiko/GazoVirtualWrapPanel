@@ -12,10 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImageWrapView.DataModels;
 using Livet;
-using ImageListView.DataModels;
+using ImageWrapView.Utils;
 
-namespace ImageListView
+namespace ImageWrapView
 {
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
@@ -27,26 +28,23 @@ namespace ImageListView
 			InitializeComponent();
 
 			DispatcherHelper.UIDispatcher = this.Dispatcher;
-		
-			this.Data = new WorkspaceViewModel(this);
-			this.DataContext = this.Data;
 
+			viewModel = new WorkspaceViewModel();
+			this.DataContext = viewModel;
+
+			viewModel.InitializeItems();
 		}
 
-		WorkspaceViewModel Data;
+		WorkspaceViewModel viewModel;
 
-		private void OnTextChanged(object sender, TextChangedEventArgs e)
+		private void VisibleButton_Click(object sender, RoutedEventArgs e)
 		{
-			var textBox = (TextBox)sender;
-			if (textBox.LineCount > 0)
-				textBox.ScrollToLine(textBox.LineCount - 1);
+			viewModel.Items[0].IsVisible = true;
 		}
 
-		private void ScrollOffsetButton_Click(object sender, RoutedEventArgs e)
+		private void ShowItemsControlMessageButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.Data.ListViewSampleContainerVertialOffset += 10.0;
+			this.MessageTextBox.Text = thumbnailListBox.GetMessage("Show GeneratorPosition");
 		}
 	}
-
-
 }

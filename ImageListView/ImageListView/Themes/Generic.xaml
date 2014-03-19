@@ -8,18 +8,16 @@
 
     <DataTemplate x:Key="Image_Anime_Template">
 		<!-- IsLoadedプロパティをバインドしているところがポイント -->
-		
-        <StackPanel Orientation="Vertical"
-					Width="150"
-					Height="160"
-					Datas:ItemData.Loaded="{Binding IsLoaded}">
-            <Label Content="{Binding IdText}" />
-            <Label Content="{Binding Label}" />
-			<Image RenderOptions.BitmapScalingMode="HighQuality"
+
+		<Border Datas:ItemData.Loaded="{Binding IsLoaded}">
+			<StackPanel Orientation="Vertical">
+				<Label Content="{Binding IdText}" />
+				<Label Content="{Binding Label}" />
+				<Image RenderOptions.BitmapScalingMode="HighQuality"
 				   Source="{Binding Icon}" />
-			
-        </StackPanel>
-    </DataTemplate>
+			</StackPanel>
+		</Border>
+	</DataTemplate>
 
     <!--  ListViewのスタイル定義  -->
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type Containers:ImageListView}, ResourceId=ImageView}"
@@ -42,11 +40,11 @@
 									<l:LivetCallMethodAction MethodName="Scrolling" MethodTarget="{Binding}" />
 								</i:EventTrigger>
 							</i:Interaction.Triggers>
-                            <Containers:VirtualizingWrapPanel
+							<Containers:VirtualizingTilePanel
                                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                                 MinWidth="100"
                                 IsItemsHost="True"
-                                ItemWidth="150" />
+                                ChildSize="{Binding ItemWidth}" />
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>

@@ -80,9 +80,16 @@ namespace ImageListView.Containers
         }
 
         public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register("ItemHeight", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity));
-        public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity));
+		public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity, new PropertyChangedCallback(OnItemWidthChanged)));
         public static readonly DependencyProperty OrientationProperty = StackPanel.OrientationProperty.AddOwner(typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(Orientation.Horizontal));
 
+		private static void OnItemWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			Console.WriteLine("OnItemWidthChanged " + e.NewValue);
+
+			var panel = (VirtualizingWrapPanel)d;
+			panel.InvalidateMeasure();
+		}
         #endregion
 
         #region Methods

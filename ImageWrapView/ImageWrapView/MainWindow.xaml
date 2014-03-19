@@ -1,0 +1,73 @@
+﻿<Window x:Class="ImageWrapView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:Containers="clr-namespace:ImageWrapView.Containers"
+        Title="MainWindow" Height="650" Width="825">
+	<Window.Resources>
+
+		<DataTemplate x:Key="NormalThumbnail">
+			<DockPanel>
+				<Label Content="実際に表示するテンプレートです" />
+			</DockPanel>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ImageArtifactTemplate">
+			<Border Height="200" BorderThickness="1" Margin="5" BorderBrush="Gray">
+				<ContentControl x:Name="content" Content="{Binding}" ContentTemplate="{x:Null}"/>
+			</Border>
+			<DataTemplate.Triggers>
+				<DataTrigger Binding="{Binding IsVisible}" Value="True">
+					<Setter TargetName="content" Value="{StaticResource NormalThumbnail}" Property="ContentTemplate"/>
+				</DataTrigger>
+			</DataTemplate.Triggers>
+		</DataTemplate>
+
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="150" />
+			<RowDefinition Height="200*" />
+			<RowDefinition Height="200*" />
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0">
+			<GroupBox Header="アイテム" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="104" Width="250">
+				<StackPanel Orientation="Vertical">
+					<StackPanel Orientation="Horizontal" Height="26">
+						<Label Content="アイテム幅" />
+						<Slider HorizontalAlignment="Left" Height="78" VerticalAlignment="Top" Width="198"
+							Minimum="10" Maximum="300" Value="{Binding ItemWidth}"/>
+					</StackPanel>
+					
+					<Button x:Name="ShowItemsControlMessageButton" Margin="2"
+							Content="メッセージ表示" Click="ShowItemsControlMessageButton_Click" />
+				</StackPanel>
+			</GroupBox>
+			<GroupBox Header="操作" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" Height="104" Width="167">
+				<StackPanel Orientation="Vertical">
+					<Button x:Name="VisibleButton"  Margin="2" Content="IsVisible" Click="VisibleButton_Click"/>
+				</StackPanel>
+			</GroupBox>
+		</Grid>
+		<Grid Grid.Row="1">
+			<ListView x:Name="thumbnailListBox"
+					 ItemsSource="{Binding Items}"
+					 ScrollViewer.VerticalScrollBarVisibility="Visible"
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					 ScrollViewer.IsDeferredScrollingEnabled="True"
+					 VirtualizingStackPanel.IsVirtualizing="True"
+					 VirtualizingStackPanel.VirtualizationMode="Recycling"
+					 ItemTemplate="{StaticResource ImageArtifactTemplate}">
+				<ListView.View>
+					<Containers:ImageListView />
+				</ListView.View>
+			</ListView>
+		</Grid>
+		<Grid Grid.Row="2">
+			<TextBox x:Name="MessageTextBox" 
+					 AcceptsReturn="True"
+					 AcceptsTab="True" 
+					 Margin="5"/>
+		</Grid>
+	</Grid>
+</Window>

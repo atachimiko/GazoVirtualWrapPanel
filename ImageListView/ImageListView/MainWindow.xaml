@@ -21,6 +21,14 @@
 					x:Name="ScrollOffsetButton"
 					Click="ScrollOffsetButton_Click"
 					Margin="5" />
+			
+			<StackPanel Orientation="Horizontal"
+						Height="28">
+				<Label Content="アイテム幅" />
+				<Slider Minimum="10" Maximum="500"
+						Width="150"
+						Value="{Binding ItemWidth}" />
+			</StackPanel>
 		</StackPanel>
 
 		<Grid Grid.Row="1"
